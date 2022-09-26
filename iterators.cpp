@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <map>
 #include <forward_list>
 
 using namespace std;
@@ -66,6 +67,19 @@ int main()
     //set<int> r_set(test_set.rbegin(), test_set.rend()); // А что будет если так?
     
     // Инвалидация итераторов:
-    //
+    // При вставке, удалении элементов, а также при потенциально при добалении в конец строки/вектора
+    // Происходит инвалидация -- ячейка памяти, на которую ссылался итератор, становится недоступной 
+
+    cout << "\nБыло в векторе до erase(): " << *(r_set.begin() + 3) << endl;
+    r_set.erase(r_set.begin() + 3);
+    cout << "Стало после erase():" << *(r_set.begin() + 3) << endl;
+
+    vector<int> test_vec(1, 1);
+    auto it_one = test_vec.begin();
+    cout  << "Емкость до 2000 push_back'ов: " << test_vec.capacity() << endl;
+    for(int i = 0; i < 2000; i++)
+        test_vec.push_back(i);
+    cout  << "Емкость после 200 push_back'ов: " << test_vec.capacity() << endl;
+    cout << "На это теперь указывает итератор: " << *it_one;
     return 0;
     }
