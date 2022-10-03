@@ -20,7 +20,30 @@ int main()
     sort(sorted_vec.begin(), sorted_vec.end(), [](int left, int right){return left < right;});
 
     //Краткое введение в лямбда-выражения в С++
-    //Место для туториала:)
+    // Можно сказать, что лямбда - выражение -- это такая безымянная(анонимная) функция 
+    // Синтаксис [захваченные параметры](аргументы){тело}
+    int x = 5;
+    auto our_lambda = [](int a){return a*a;};
+    x = our_lambda(x);
+
+    //Теперь поговорим о захвате значений
+    //Лямбда выражение может иметь возможность обратиться к внешним элементам 
+    // Т.е. к локальным переменные функции, из которой она вызывается. Для этого нужно вписать переменную в [] 
+    x = 0;
+    auto adder = [&x](int element){x += element;};
+    for(int element: sorted_vec)
+    {
+        adder(element);
+    }
+
+    auto increaser = [x](int& element){element += x;};
+    for(int& element: sorted_vec)
+    {
+        increaser(element);
+    }
+    // Есть возможность захватить все перменные по ссылке или значению: [&] или [=], а также все кроме каких-то:
+    // [&, x] -- тут все захватывается по ссылке, а х -- по значению
+
     
     vector<int> test_vec(10);
     // Алгоритм for_each() -- в некоторых случаях удобная замена циклу for
@@ -43,14 +66,14 @@ int main()
 
     //Алгоритм find_if -- возращает первый элемент, для которого переданный выражение вернет true (вместо искомого значение передается функциональный объект)
     //т.о. find_if(begin, end, [some_value](int element){return element == some_value}) --- это тоже самое что и find(begin, end, some_value)
-    int a = 25;
+    int a = 24;
     it = find_if(test_vec.begin(), test_vec.end(), [a](int element){return element >= a;});
 
     //Также можно посчитать сколько элементов в последовательности равны определенному значению,
     // или удовлетворяют какому-то условию с помощью функций count  и count_if соответсвенно 
 
     size_t counted = count(test_vec.begin(), test_vec.end(), 4);
-    size_t counted = count_if(test_vec.begin(), test_vec.end(), [](int element){return element > 0;});
+    size_t counted_positive = count_if(test_vec.begin(), test_vec.end(), [](int element){return element > 0;});
 
     //Иногда нужно проверить, удовлетворяют ли все элементы (или хотя бы один из) какому либо условием
     //Для подобных задач есть функции all_of, any_of, none_of
