@@ -42,14 +42,14 @@ int main()
 
     // Теперь посмотрим, как ими орудовать: 
 
-    set<int> test_set{1, 2, 3, 4, 5, 6}; // Вектор для тестов
+    set<int> test_set{1, 2, 3, 4, 5, 6}; // множество для тестов
 
     auto two_it = test_set.find(2);
     //Также для перемещения есть методы std::next(it), std::prev(it), std::advance(it, int_move)
 
     cout << "Найденное значение: " << *two_it ;
     advance(two_it, 3);
-    cout << " , перемещаемся на три методом advance на 3: " << *two_it;
+    cout << " , перемещаемся на три методом advance(it, 3): " << *two_it;
     next(two_it);
     cout << ", смещаем вперед на элемент методом next: " << *two_it;
     prev(two_it);
