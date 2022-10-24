@@ -1,5 +1,7 @@
 #include <iostream>
 #include "my_vec.h"
+/// @brief 
+/// @return 
 int main()
 {
     //Объектно ориентированный подход -- программа стоит из взаимодействующих сущностей - объектов
@@ -19,21 +21,40 @@ int main()
     //Давайте в качестве примера реализуем класс вектор, который реализует структуру данных вектор
     //ДИСКЛЕЙМЕР: пока не реализует в полной мере -- у вектора памяти больше, чем требуется для хранения данных
     //Создаем векторы заполнением
-    vector arr(1, 3);
-    vector arr2(2,4);
+    vector def_arr;
+    vector def_arr2(10);
+
+    vector fill_arr(2,4);
 
     //Создаем вектор с помощью копирования
-    vector arr3(arr);
+    vector copied_arr(fill_arr);
+
+    //Также есть перемещающий конструктор!
+    vector vec_moved(std::move(fill_arr));
+
     //Проверяем на равенство
-    bool is_arr3_eq_arr = (arr == arr3);
+    bool moved_eq_cop = (copied_arr == vec_moved);
+    
+    bool cop_eq_init = (copied_arr == fill_arr);
+
+    //У нашего вектора естьи другие методы:
+    std::cout << "Vector's capacity is " << def_arr.capacity() << " " << " but it's size is " << def_arr.size() << std::endl;
+
+    //Давайте на'pus_back'ем в наш вектор элементов:
+    for(size_t i = 0; i < 10; i++)
+        def_arr.push_back(i);
+
+    //А теперь выведем все это дело в консоль:
+    for(size_t i = 0; i < def_arr.size(); i++)
+        def_arr2[i] = def_arr[i];
+
 
     //Операция + здесь определена как конкатенация
-    vector vec_new = arr + arr2;
+    vector vec_new = copied_arr + vec_moved;
 
     //Выводим получившийся вектор
     std::cout << vec_new << std::endl;
 
-    vector to_move(std::move(vec_new));
 
     //Заметим, что мы так реализовали интерфейс класса,
     //что работа с ним мало чем отличается от работы с встроенными типами!

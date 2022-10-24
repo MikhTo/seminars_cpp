@@ -12,7 +12,7 @@ class vector
     public:
 
     //Конструкторы и деструктор
-    vector(size_t size);
+    vector(size_t size = 0);
     vector(const vector& vec_to_copy);
     vector(vector&& vec_to_move);
     vector(size_t size, int element);

@@ -1,9 +1,9 @@
 #include "my_vec.h"
 
 
-//Функция, имеющая имя класса называется конструктор
+//Метод, называющийся как класс -- конструктор
 //Она инициализирует поля объекта
-vector::vector(size_t size = 0)
+vector::vector(size_t size)
 {
     size_ = size;
     capacity_ = size_ + 1;
@@ -51,6 +51,13 @@ vector::~vector()
         // Ведь всегда можно использовать vector, который сам освободит память!!!
 }
 
+//Прибавлет вектору слева вектор справа
+//Сложение у нас == конкатенция
+//Если мы включили оператор в класс (как в нашем случае)
+//То можно рассматривать его, как метод класса
+//т.е. можно в реализации образщаться к данным (pData_, size_ и т.д.)
+//просто по имени, при этом мы обращаемся к полям ЛЕВОГО объекта вектора (left):
+// left += some_vector_on_the_right
 vector& vector::operator+=(const vector& rhs) 
 {
     int presize = size_;
@@ -61,8 +68,14 @@ vector& vector::operator+=(const vector& rhs)
     }
     return *this;
 }
+
+//Оператор равно по суть копирует вектор справа в вектор слева
 vector vector::operator=(const vector& rha)
 {
+    //Эта проверка нужна, чтобы при попытке приравнять элемент самому себе
+    // не происходило удаление памяти (удаление происходит в ~vector())
+    //this - указатель на текущий объект
+    //т.е. тот, что находится слева
     if(this != &rha)
     {
         this->~vector();
@@ -74,14 +87,22 @@ vector vector::operator=(const vector& rha)
     }
     return *this;
 }
+
+//Возвращает ССЫЛКУ на i-ый элемент
+//Что позволяет менять его значения
 int& vector::operator[](size_t index)
 {
     return *(pData_ + index);
 }
+
+//Возвращает значение i-го элемента
+//При этом нельзя менять значение данных класса
 int vector::operator[](size_t index) const
 {
     return pData_[index];
 }
+
+//Перемещающее равенство
 vector vector::operator=(vector&& rha)
 {
     std::swap(this->size_, rha.size_);
@@ -89,11 +110,14 @@ vector vector::operator=(vector&& rha)
     std::swap(this->pData_, rha.pData_);
     return *this;
 }
+// Позволяет узнать размер вектора 
 size_t vector::size() const
 {
     return size_;
 }
 
+//Оператор вывод в поток (не является членом класса, но является другом)
+//Хотя можно было и не дружиться с классом, просто воспользоваться оператором [] для нашего вектора
 std::ostream& operator<<(std::ostream& os, const vector& to_print)
 {
     //Точно также можно перегузить оператор ввода >>
@@ -102,6 +126,7 @@ std::ostream& operator<<(std::ostream& os, const vector& to_print)
     return os;
 }
 
+// Оператор сложения
 vector operator+(const vector& lha, const vector& rha)
 {
     vector result(lha);
@@ -109,6 +134,7 @@ vector operator+(const vector& lha, const vector& rha)
     return result;
 }
 
+// Реализует поэлементное сравнение
 bool operator==(const vector& lha, const vector& rha)
 {
     if(rha.size() != lha.size())
@@ -120,6 +146,7 @@ bool operator==(const vector& lha, const vector& rha)
     return true;
 }
 
+// Увеличивает емкость нашего вектора в 2 раза не меняя содержимое
 void vector::increase_buffer()
 {
     int* new_buf = new int [capacity_ * 2];
@@ -131,12 +158,16 @@ void vector::increase_buffer()
     capacity_ *= 2;  
 }
 
+//Метод, позволяющий узнать размер памяти, которым владет наш вектор
 size_t vector::capacity() const
 {
     return capacity_;
 }
+
+// Добавляет элемент в конец
 void vector::push_back(int element)
 {
+    //Перед тем, как добавлять элемент, нужно проверить, хватает ли нам памяти
     if(capacity_ <= size_)
         increase_buffer();
     
