@@ -16,8 +16,7 @@ template<typename T> //typename означает, что T в дальнейше
 T square(T x)
 {
     //Ура!!! Не надо писать отдельные функции для double и float!
-    //Однако, если мы передадим в функцию значения, для типа которых
-    //Не определена операция умножения, то произойдет ...
+    //Однако, стоит передавать те типы, для которых определена операция умножения
     return x*x;
 }
 
@@ -33,6 +32,29 @@ template <> std::string square<std::string>(std::string str)
             str+=str;
     return str;
 }
+
+
+//Параметром может быть не только имя типа, но и целое число,
+//А шаблонными могут быть не только функции, но и классы
+
+template<typename T, int N>
+class NVector
+{
+    T* pData;
+
+    public:
+    NVector(std::array<T,N> coord): pData(new T [N]) { 
+        for(size_t i = 0; i < N; i++)
+            pData[i] = coord[i];
+    }
+    ~NVector(){delete [] pData;}
+    //Дальше можно реализовывать методы для работы с этим вектором
+    //P.S. А еще, разумней было бы использовать указателя на T соответсвующий std::array
+};
+
+
+
+
 
 
 
@@ -52,6 +74,10 @@ int main()
     //Помним, что для char у нас спецификация
 
     auto squared_str = square<std::string>("Hey");
+
+
+    NVector<double, 3> unit_vec3D({1, 0, 0});
+
 
     //А темеперь посмотрим на наш шаблонный вектор -- он стал почти как из std!!!
 
