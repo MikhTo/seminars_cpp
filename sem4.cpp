@@ -65,6 +65,11 @@ int main()
     transform(test_vec.begin(), test_vec.end(), destination.begin(), 
     [](int element){return element*element;}); 
 
+    //Также можно, например, поменять регистр у строки
+    string str("Hello, stranger!");
+    transform(str.begin(), str.end(), str.begin(), 
+    [](char c){return toupper(c);}); 
+
     // Алгоритмы поиска:
     // Алгоритм find -- возращает итератор на первый элемент равный значению, 
     // переденному функции в качестве аргумента
@@ -75,7 +80,8 @@ int main()
 
     // Алгоритм find_if -- возращает первый элемент, 
     // для которого переданное выражение вернет true (вместо искомого значение передается функциональный объект)
-    // т.о. find_if(begin, end, [some_value](int element){return element == some_value}) --- это тоже самое что и find(begin, end, some_value)
+    // т.о. find_if(begin, end, [some_value](int element){return element == some_value}) 
+    // --- это тоже самое что и find(begin, end, some_value)
     int a = 24;
     it = find_if(test_vec.begin(), test_vec.end(), [a](int element){return element >= a;});
 
@@ -98,7 +104,7 @@ int main()
     std::sort(snumb.begin(), snumb.end());
 
     // Теперь можем рассмотреть алгоритмы
-    auto lower_re = std::lower_bound(snumb.begin(), snumb.end(), "five"); // Возращает итератор нп элемент >= третьему аргументу
+    auto lower_re = std::lower_bound(snumb.begin(), snumb.end(), "five"); // Возращает итератор на элемент >= третьему аргументу
     auto upper_res = std::upper_bound(snumb.begin(), snumb.end(), "five"); // Возращает итератор на элемент > третьего аргумента
     auto binary_res = std::binary_search(snumb.begin(), snumb.end(), "five"); // Возращает true, если в последовательности есть третий аргумент
 
@@ -117,7 +123,7 @@ int main()
 
     // Рассмотрим библиотеку numeric
 
-    // Алгоритм iota позволяет заполнить вектор числами от n до т + vector.size - 1
+    // Алгоритм iota позволяет заполнить вектор числами от n до n + vector.size - 1
     // n - третий аргумент
     std::vector<int>  vec_to_fill(10);
     std::iota(vec_to_fill.begin(), vec_to_fill.end(), -5);
