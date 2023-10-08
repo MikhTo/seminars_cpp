@@ -3,53 +3,73 @@
 #include <iostream>
 #include <cmath>
 
+// Описание класса начинается с ключевого слова class
+// и имени класса (у нас это Cat) 
 class Cat
 {
+    //Поля класса могут быть открытими и закрытыми
+    //Зачастую (но далеко не всегда), 
+    // закрытые поля -- это хранимые данные, а открытые -- методы
     private:
     std::string name;
     int age;
     double weight;
-    double daily_colorage = 5000; //?
+    double daily_colorage = 500; //?
 
 
     public:
+    //У классов есть набор особых методов
+    //Один из них -- конструктор, метод, который вызывается при создании нового объекта
+    //Ниже реализован конструктор класса Cat - он принимает имя, вес и возраст кота
+    //Обратите внимание, что у cat_age есть значение по умолчанию
     Cat(std::string cat_name, double cat_weight, int cat_age = 0)
     {
+        //Здесь просто инициализируем поля аргументами функции
         name = cat_name;
         weight = cat_weight;
         age = cat_age;
     }
 
+    //Метод bark позволяет нашему коту мяукать
     void bark()
     {
         std::cout << "Meow!!!" << std::endl;
     }
 
+    //метод eat позволяет кормить нашего кота
+    //при этом вес кота может измениться
     void eat(double calories)
     {
         if(calories > daily_colorage)
             weight+=0.050*calories/daily_colorage;
     }
 
+    //Можео определить првила для сравнения котов:
     bool operator>(Cat left_cat)
     {
         if(left_cat.age != age)
             return weight > left_cat.weight;
         return age > left_cat.age;
     }
-    
+    //Конечно, данный класс еще есть куда дорабатывать
 };
 
 
 
 class ComplexNumber
 {
-    private:
+    //Заметьте, что нет privare:
     double real_;
     double img_;
-    public:
     
+    public:
     ComplexNumber(double r = 0, double i = 0): real_(r), img_(i) {};
+    ComplexNumber(const ComplexNumber& to_copy)
+    {
+        this->real_ = to_copy.real_;
+        this->img_ = to_copy.img_;
+    }
+    ~ComplexNumber(){}
     double real() const
     {
         return real_;
@@ -74,7 +94,9 @@ class ComplexNumber
     }
     ComplexNumber operator=(const ComplexNumber& rightNumb)
     {
-
+        this->real_ = rightNumb.real_;
+        this->img_ = rightNumb.img_;
+        return *this;
     }
     ComplexNumber operator+(const ComplexNumber& rightNumb) const
     {
@@ -133,7 +155,7 @@ std::ostream& operator<<(std::ostream& os, const ComplexNumber& cn) {
     return os;
 }
 
-std::istream& operator<<(std::istream& is, ComplexNumber& cn) {
+std::istream& operator>>(std::istream& is, ComplexNumber& cn) {
     std::string sign;
     is >> cn.real() >> sign >> cn.img();
     if(sign == "-")
@@ -144,5 +166,62 @@ std::istream& operator<<(std::istream& is, ComplexNumber& cn) {
 //Добавить унарные операции
 int main()
 {
+    // Сегодня начнем знакомиться с ООП
+    // Отличие этого подхода от того, что было ранее в том, что появляется новая сущность
+    // Объекты -- создаваемые программистом сущности, 
+    // они обладают ПОЛЯМИ для хранения данных
+    // и МЕТОДАМИ для работы с ними (где мы еще слышали про методы?)
+    // Каждый объект принадлежит к какому-то классу (именно класс и описывает разработчик)
+    // Функционал разных может быть разным (это зависит от того, какие задачи класс решает), 
+    // его можно довести до того, что работа с объектами
+    // (по факту с переменными с пользовательским типом данных)
+    // будет ничем не отличаться от встроенных типов данных
+    // 
+    // Основные принципы ООП: абстракция, инкапсуляция, наследование и полиморфизм
+    // Мы будем знакомиться с ними на ближайших трех занятиях 
+
+    //Обычно говорится, что ООП было придумано для более удобного описания РЕАЛЬНЫХ вещей
+    //Поэтому обычно в качестве вводных примеров используют кошечек и собачек
+    //Не будем оригинальными:
+    Cat Mozart("Mozart", 2, 1);
+    Cat Valera("Valera", 3);
+
+    //Можно кормить котов:
+    Mozart.eat(300);
+    Valera.eat(900);
+
+    //Можно заставить их мяукать:
+    Mozart.bark();
+    Valera.bark();
+
+    std::cout << "Сравниваем котов: " << (Mozart > Valera) << std::endl;
+
+    //Коты - это, конечно, хорошо
+    //Но как физики мы чаще имеем дело с различными физическими/математическими абстракциями
+    //И они тоже прекрасно описываются объектно-ориентированным подходом
+
+    //Давайте создадим класс комплексных чисел (есть готовый класс в библиотеке complex)
+    ComplexNumber c1;
+    ComplexNumber c2(1);
+    ComplexNumber c3(4, -4);
+
+    ComplexNumber copied(c3);
+    ComplexNumber from_int = 10;
+
+    c3.conj();
+    std::cout << c3.real() << c3.img();
+
+    std::cout << c3.abs() << c3.arg() << std::endl;
+    ComplexNumber sum = c2 + c3;
+    sum *= c2;
+
+    //Для комплексных чисел определена оперция сравнения на равенство
+    //Мы тоже ее определили:
+    bool is_equal = (c2 == sum);
+
+    //Можно определить правила, по которым вводится из/выводятся в стандартный поток
+    //наши комплексные числа 
+    std::cin >> c1;
+    std::cout << c1; 
     return 0;
 }
