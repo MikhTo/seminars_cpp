@@ -1,6 +1,7 @@
 //Семинар 5: ООП и с чем его едят
 #include <string>
 #include <iostream>
+#include <cmath>
 
 class Cat
 {
@@ -49,11 +50,20 @@ class ComplexNumber
     public:
     
     ComplexNumber(double r = 0, double i = 0): real_(r), img_(i) {};
-    double real_part()
+    double real() const
     {
         return real_;
     }
-    double img_part()
+    double img() const
+    {
+        return img_;
+    }
+
+    double& real()
+    {
+        return real_;
+    }
+    double& img()
     {
         return img_;
     }
@@ -62,14 +72,76 @@ class ComplexNumber
     {
         img_*=-1;
     }
+    ComplexNumber operator=(const ComplexNumber& rightNumb)
+    {
 
-    ComplexNumber operator+(const ComplexNumber rightNumb) const
+    }
+    ComplexNumber operator+(const ComplexNumber& rightNumb) const
     {
         return {this->real_+rightNumb.real_, this->img_+rightNumb.img_};
     }
+    ComplexNumber operator-(const ComplexNumber& rightNumb) const
+    {
+        return {this->real_-rightNumb.real_, this->img_-rightNumb.img_};
+    }
+    ComplexNumber operator*(const ComplexNumber& rightNumb) const
+    {
+        return {this->real_*rightNumb.real_ - this->img_*rightNumb.img_, 
+            this->img_*rightNumb.real_ + this->real_*rightNumb.img_};
+    }
+    ComplexNumber operator+=(const ComplexNumber& rightNumb) 
+    {
+        this->real_ += rightNumb.real_;
+        this->img_ += rightNumb.img_;
+        return *this;
+    }
+    ComplexNumber operator-=(const ComplexNumber& rightNumb)
+    {
+        this->real_ -= rightNumb.real_;
+        this->img_ -= rightNumb.img_;
+        return *this;
+    }
+    ComplexNumber operator*=(const ComplexNumber& rightNumb)
+    {
+        this->real_ *= rightNumb.real_;
+        this->img_ *= rightNumb.img_;
+        return *this;
+    }
+    
+    double abs()
+    {
+        ComplexNumber res = (*this)*(*this);
+        return sqrt(res.real_);
+    }
+    double arg()
+    {
+        //Потенциально деление на 0!
+        return atan(this->img_/this->real_);
+    }
+
+    //Операторы сравнения
+    //Для комплексных чисел их немного:
+    bool operator==(ComplexNumber& rightArg)
+    {
+        return (this->real_ == rightArg.real_) && (this->img_ == rightArg.img_);
+    }
+
 };
 
+std::ostream& operator<<(std::ostream& os, const ComplexNumber& cn) {
+    os << cn.real() << " + " << cn.img() << "i";
+    return os;
+}
 
+std::istream& operator<<(std::istream& is, ComplexNumber& cn) {
+    std::string sign;
+    is >> cn.real() >> sign >> cn.img();
+    if(sign == "-")
+        cn.img()*=-1;
+    return is;
+}
+
+//Добавить унарные операции
 int main()
 {
     return 0;
