@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 // Описание класса начинается с ключевого слова class
 // и имени класса (у нас это Cat) 
@@ -63,13 +64,24 @@ class ComplexNumber
     double img_;
     
     public:
+    //Еще один способ создать конструктор:
     ComplexNumber(double r = 0, double i = 0): real_(r), img_(i) {};
-    ComplexNumber(const ComplexNumber& to_copy)
+    //Конструктор копирования реализуется для копирования объектов
+    ComplexNumber(const ComplexNumber& to_copy) //Он принимает ссылку на объект
     {
+        //Внутри определения класса нам доступен this -- указатель на сам объет
         this->real_ = to_copy.real_;
         this->img_ = to_copy.img_;
+        //Следующая запись тоже сработала бы
+        //real_ = to_copy.real_;
+        //img_ = to_copy.img_;
+        //я прописываю явно this только для удобочитаемости
     }
-    ~ComplexNumber(){}
+    //Деструктор вызывается при удалении объекта (здесь он максимально прост)
+    //На следующей паре рассмотрим примеры, где надо его реально реализовывать
+    ~ComplexNumber(){} //Объявление деструктора: ~имя_класса()
+
+    //Заметьте, что real и img -- перегружены
     double real() const
     {
         return real_;
@@ -88,10 +100,12 @@ class ComplexNumber
         return img_;
     }
     
+    //Оперция сопряжения
     void conj()
     {
         img_*=-1;
     }
+    //Переопределяем операторы
     ComplexNumber operator=(const ComplexNumber& rightNumb)
     {
         this->real_ = rightNumb.real_;
@@ -156,8 +170,8 @@ std::ostream& operator<<(std::ostream& os, const ComplexNumber& cn) {
 }
 
 std::istream& operator>>(std::istream& is, ComplexNumber& cn) {
-    std::string sign;
-    is >> cn.real() >> sign >> cn.img();
+    std::string sign, i;
+    is >> cn.real() >> sign >> cn.img() >> i;
     if(sign == "-")
         cn.img()*=-1;
     return is;
@@ -201,19 +215,26 @@ int main()
     //И они тоже прекрасно описываются объектно-ориентированным подходом
 
     //Давайте создадим класс комплексных чисел (есть готовый класс в библиотеке complex)
-    ComplexNumber c1;
+    ComplexNumber c1; //Наш конструктор позволяет создавать комплексный числа по разному
     ComplexNumber c2(1);
     ComplexNumber c3(4, -4);
 
+    //Можно создавать путем копирования
     ComplexNumber copied(c3);
+    //Что будет, если приравняем int?
     ComplexNumber from_int = 10;
 
+    //Реализовали разные методы
+    //Сопряжение
     c3.conj();
-    std::cout << c3.real() << c3.img();
+    
+    std::cout << "Реальная часть: " << c3.real() << ", мнимая часть: " << c3.img() << std::endl;
+    //Модуль и фаза
+    std::cout<< "Модуль: " << c3.abs()  << ", Фаза: " << c3.arg() << std::endl;
 
-    std::cout << c3.abs() << c3.arg() << std::endl;
+    //Переопределили для нашего класса арифметические операторы
     ComplexNumber sum = c2 + c3;
-    sum *= c2;
+    sum *= c2 - c3;
 
     //Для комплексных чисел определена оперция сравнения на равенство
     //Мы тоже ее определили:
@@ -223,5 +244,10 @@ int main()
     //наши комплексные числа 
     std::cin >> c1;
     std::cout << c1; 
+
+    //Объекты ComplexNumber можно хранить в vector
+    std::vector<ComplexNumber> cvec = {{-5, 10}, c1, c2, c3};
+    //т.о. мы таким образом определили наш класс, что работать с ним также удобно,
+    // как и со встроенными типами
     return 0;
 }
