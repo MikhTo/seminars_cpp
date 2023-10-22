@@ -4,7 +4,8 @@
 #include <algorithm>
 #include <cmath>
 
-#include <exception>
+#include <exception> //Для исключений
+#include "game.hpp" //Классы персонажей
 
 class Animal {
 
@@ -60,6 +61,52 @@ class Owl: public Animal
         std::cout << "Twit-Twoo!" << std::endl;
     }
 };
+
+
+void game()
+{
+    Swordsman swm1(100, 50, 100);
+    Archer arch1(80, 10, 0.8);
+    Wizard wzd1 (60, 15, 100);
+    std::vector<Unit*> first_team{&swm1, &arch1, &wzd1};
+
+    Swordsman swm2(100, 50, 100);
+    Archer arch2(80, 10, 0.8);
+    Wizard wzd2 (60, 15, 100);
+    std::vector<Unit*> second_team{&swm2, &arch2, &wzd2};
+
+    while(!first_team.empty() && !second_team.empty())
+    {
+        std::random_shuffle(first_team.begin(), first_team.end());
+        std::random_shuffle(second_team.begin(), second_team.end());
+
+        for(int i = 0; i < std::min(first_team.size(), second_team.size()); i++)
+            fight(first_team[i], second_team[i]);
+        
+        first_team.erase(std::remove_if(first_team.begin(), first_team.end(), 
+                            [](Unit* pers){return pers->is_alive();}), first_team.end());
+        
+        second_team.erase(std::remove_if(second_team.begin(), second_team.end(), 
+                            [](Unit* pers){return pers->is_alive();}), second_team.end());
+        
+        std::cout << "First team: " << std::endl;
+        std::for_each(first_team.begin(), first_team.end(), 
+                        [](Unit* pers){std::cout << pers->get_status() << std::endl;});
+
+        std::cout << "Second team: " << std::endl;
+        std::for_each(second_team.begin(), second_team.end(), 
+                        [](Unit* pers){std::cout << pers->get_status() << std::endl;});
+    }
+    if(first_team.empty())
+        std::cout << "Second team has won!" << std::endl;
+    else if (second_team.empty())
+        std::cout << "First team has won!" << std::endl;
+    else
+        std::cout << "Draw game!" << std::endl;
+
+}
+
+
 double calc(std::string operation, double x, double y)
 {
     if(operation == "+")
@@ -152,7 +199,9 @@ int main()
     //то Animal -- это скорее заготовка, в которой прописаны общие для всех свойства
 
     //Чтобы решить эту проблемы можно воспользоваться абстрактными классами
-    
+
+    game();
+
 
     // Также если в какой-то момент времени указатель указывал на объект класса A1
     // Который был отнаследован от класса B, то ничто не мешает ему затем 
