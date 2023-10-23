@@ -42,6 +42,6 @@ std::string Wizard::get_status()
 
 void fight(Unit* first, Unit* second) 
 {
-    first->health_ -= second->attack();;
-    second->health_ -= first->attack();;
+    first->health_ -= second->attack();
+    second->health_ -= first->attack();
 }
