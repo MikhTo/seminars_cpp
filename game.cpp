@@ -1,7 +1,7 @@
 #include "game.hpp"
 
 Unit::Unit(double health, double damage): health_(health), damage_(damage) {}
-bool Unit::is_alive(){return health_ >= 0;}
+bool Unit::is_alive(){return health_ > 0;}
 
 Swordsman::Swordsman(double health, double damage, double stamina): Unit(health, damage), stamina_(stamina){};
 double Swordsman::attack()
@@ -30,7 +30,7 @@ Wizard::Wizard(double health, double damage, double mana): Unit(health, damage),
 
 double Wizard::attack()
 {
-    double strike = damage_*mana_;
+    double strike = damage_*mana_/100;
     mana_ *= 0.75;
     return strike;
 }

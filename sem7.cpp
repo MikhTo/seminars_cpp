@@ -3,6 +3,8 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 #include <exception> //Для исключений
 #include "game.hpp" //Классы персонажей
@@ -77,6 +79,7 @@ void game()
 
     while(!first_team.empty() && !second_team.empty())
     {
+        std::srand(std::time(0));
         std::random_shuffle(first_team.begin(), first_team.end());
         std::random_shuffle(second_team.begin(), second_team.end());
 
@@ -84,10 +87,10 @@ void game()
             fight(first_team[i], second_team[i]);
         
         first_team.erase(std::remove_if(first_team.begin(), first_team.end(), 
-                            [](Unit* pers){return pers->is_alive();}), first_team.end());
+                            [](Unit* pers){return !pers->is_alive();}), first_team.end());
         
         second_team.erase(std::remove_if(second_team.begin(), second_team.end(), 
-                            [](Unit* pers){return pers->is_alive();}), second_team.end());
+                            [](Unit* pers){return !pers->is_alive();}), second_team.end());
         
         std::cout << "First team: " << std::endl;
         std::for_each(first_team.begin(), first_team.end(), 
@@ -97,12 +100,12 @@ void game()
         std::for_each(second_team.begin(), second_team.end(), 
                         [](Unit* pers){std::cout << pers->get_status() << std::endl;});
     }
-    if(first_team.empty())
-        std::cout << "Second team has won!" << std::endl;
+    if(first_team.empty() && second_team.empty())
+        std::cout << "Draw game!" << std::endl;
     else if (second_team.empty())
         std::cout << "First team has won!" << std::endl;
     else
-        std::cout << "Draw game!" << std::endl;
+        std::cout << "Second team has won!" << std::endl;
 
 }
 
